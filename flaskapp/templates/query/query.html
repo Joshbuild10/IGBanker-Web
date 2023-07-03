@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Query{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <script>
+        // Adds a new condition to the table body
+        function addCondition()
+        {
+            // Enables the remove button if there is only one row
+            if (document.getElementById("querytable").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length == 1)
+            {
+                document.getElementById("querytable").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[0].getElementsByTagName("td")[3].getElementsByTagName("button")[0].classList.remove("disabled");
+            }
+            // Gets the table body
+            var tbody = document.getElementById("querytable").getElementsByTagName("tbody")[0];
+
+            // Gets a template row to use set to default values
+            var template = document.createElement("tr");
+            template.innerHTML = tbody.getElementsByTagName("tr")[0].innerHTML;
+
+            tbody.appendChild(template);
+        }
+
+        // Removes the row containing the button
+        function removeRow(button)
+        {
+            // Checks if there is more than one row in the table
+            if (button.parentElement.parentElement.parentElement.getElementsByTagName("tr").length > 1)
+            {
+                button.parentElement.parentElement.remove()
+            }
+            else
+            {
+                alert("You cannot remove the last condition!")
+            }
+            // Disables the remove button if there is only one row
+            if (document.getElementById("querytable").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length == 1)
+            {
+                document.getElementById("querytable").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[0].getElementsByTagName("td")[3].getElementsByTagName("button")[0].classList.add("disabled");
+            }
+        }
+    </script>
+    <div class="circlecont">
+        <div class="circle1"> </div>
+        <div class="circle2"> </div>
+        <div class="circle3"> </div>
+        <div class="circle4"> </div>
+        <div class="circle5"> </div>
+    </div>
+    <div class="container">
+        <p class="title">Question Bank Maker</p>
+        <div class="main flex-column align-items-stretch justify-content-start">
+            <form action="/query" method="post">
+                <div class="top d-flex flex-column row-gap-4 my-5 mx-5">
+                    <div class="input-group">
+                        <label class="input-group-text" for="board">Exam Board:</label>
+                        <select class="form-select" id="board" name="board">
+                            <option>IGCSE Cambridge</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-group-text" for="subject">Subject:</label>
+                        <select class="form-select" id="subject" name="subject">
+                            <option>Biology (0460)</option>
+                        </select>
+                    </div>
+                    <table class="table table-bordered text-center table-m" id="querytable">
+                        <thead>
+                            <tr>
+                                <th>Criteria</th>
+                                <th>Search string</th>
+                                <th>Similarity</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="mainrow">
+                                <td >
+                                    <select class="form-select" id="criteria" name="criteria">
+                                        <option>Text</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="form-control" type="text" id="search_string" name="search_string">
+                                </td>
+                                <td>
+                                    <input class="form-control" type="number" id="similarity" name="similarity" min="0" max="1" value="1" step="0.1"
+                                    onchange="if(this.value>this.max)this.value=this.max;if(this.value<this.min)this.value=this.min;">
+                                </td>
+                                <td class="snug">
+                                    <button type="button" class="btn btn-outline-danger remove disabled" onclick="removeRow(this)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                                        </svg></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4">
+                                    <button type="button" class="btn btn-outline-primary add" onclick="addCondition()">
+                                        Add condition
+                                    </button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <button type="submit" class="btn submit">Find Questions!</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
