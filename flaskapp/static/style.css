@@ -1,19 +1,25 @@
 body {
     background-color: #0D1821 !important;
 }
-
+.container {
+    --width: 98%;
+    --height: 70%;
+    --text-size: 30px;
+    --text-height: 35px;
+    --padding: 5px;
+}
 .title {
     position: absolute;
-    width: 98%;
-    height: 40px;
-    left: calc(50% - 98%/2);
-    top: calc(50% - 70%/2 - 40px - 5px);
+    width: var(--width);
+    height: var(--text-height);
+    left: calc(50% - var(--width)/2);
+    top: calc(50% - var(--height)/2 - var(--text-height) - var(--padding));
 
     /*font-family: 'Inter' ;*/
     font-style: normal;
     font-weight: 700;
-    font-size: 30px;
-    line-height: 40px;
+    font-size: var(--text-size);
+    line-height: var(--text-height);
     /* identical to box height */
 
     text-align: center;
@@ -25,10 +31,10 @@ body {
 .main {
 
     position: absolute;
-    width: 98%;
-    height: 70%;
-    left: calc(50% - 98%/2);
-    top: calc(50% - 70%/2);
+    width: var(--width);
+    height: var(--height);
+    left: calc(50% - var(--width)/2);
+    top: calc(50% - var(--height)/2);
 
     background: #30343F;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -43,58 +49,38 @@ body {
 
 @media only screen and (min-width: 425px)
 {
-    .main, .title{
-        width: 95%;
-        left: calc(50% - 95%/2);
-    }
-    .main {
-        height: 60%;
-        top: calc(50% - 60%/2);
-    }
-    .title {
-        font-size: 35px;
-        line-height: 40px;
-        height: 40px;
-        top: calc(50% - 40px - 60%/2 - 5px);
-        /* format for top: calc(50% - titleheight - main height/2 - padding) */
+    .container {
+        --width: 95%;
+        --height: 65%;
+        --text-size: 35px;
+        --text-height: 40px;
+        --padding: 5px;
     }
 }
 @media only screen and (min-width: 768px)
 {
-    .main, .title{
-        width: 85%;
-        left: calc(50% - 85%/2);
-    }
-    .main {
-        height: 500px;
-        top: calc(50% - 500px/2);
-    }
-    .title{
-        font-size: 45px;
-        line-height: 50px;
-        height: 50px;
-        top: calc(50% - 50px - 250px - 5px);
+    .container {
+        --width: 85%;
+        --height: 500px;
+        --text-size: 45px;
+        --text-height: 50px;
+        --padding: 5px;
     }
 }
 @media only screen and (min-width: 992px)
 {
-    .main, .title {
-        width: 80%;
-        left: calc(50% - 80%/2);
-    }
-    .title {
-        font-size: 50px;
-        line-height: 60px;
-        height: 60px;
-        top: calc(50% - 60px - 250px - 5px);
+    .container {
+        --width: 80%;
+        --text-size: 50px;
+        --text-height: 60px;
+        --padding: 5px;
     }
 }
 
 @media only screen and (min-width: 1400px)
 {
-    .main{
-        width: 1152px;
-        left: calc(50% - 1152px/2);
+    .container {
+        --width: 1152px;
     }
 }
 .table {
