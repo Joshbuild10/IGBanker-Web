@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 
 
 def create_app(test_config=None):
@@ -31,7 +31,8 @@ def create_app(test_config=None):
     
     @app.route('/')
     def index():
-        return 'Index Page'
+        # Redirect to query page
+        return redirect(url_for('query.query'))
     
     from . import query
     app.register_blueprint(query.bp)
