@@ -3,3 +3,4 @@ instance
 *.sock
 *.ini
 wsgi.py
+output.pdf

@@ -44,9 +44,16 @@ body {
     --bs-body-bg: rgba(136, 141, 167, 0.1);
     --bs-tertiary-bg: rgba(136, 141, 167, 0.1);
     --bs-border-color: rgba(156, 122, 151, 0.3);
-
 }
-
+.form-select {
+    width: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.table {
+    padding: 0px !important;
+}
 @media only screen and (min-width: 425px)
 {
     .container {
@@ -55,6 +62,10 @@ body {
         --text-size: 35px;
         --text-height: 40px;
         --padding: 5px;
+    }
+    body {
+        --bs-body-font-size: 1rem;
+        --bs-body-font-weight: 400;
     }
 }
 @media only screen and (min-width: 768px)
@@ -82,6 +93,9 @@ body {
     .container {
         --width: 1152px;
     }
+}
+select option {
+    background-color: #393d4a;
 }
 .table {
     --bs-table-bg: rgba(136, 141, 167, 0.1) !important;
