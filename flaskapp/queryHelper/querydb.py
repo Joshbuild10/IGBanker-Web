@@ -1,4 +1,6 @@
 import difflib
+import os
+
 
 # Function to query SQLite db 
 def queryDb(db, parameters):
@@ -57,5 +59,5 @@ def queryDb(db, parameters):
                 flag = 0
                 break
         if flag:
-            matches.append(row["Filename"])
+            matches.append(row["Filename"].replace('\\', os.sep))
     return matches

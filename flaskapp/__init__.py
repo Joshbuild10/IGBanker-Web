@@ -6,11 +6,23 @@ from flask import Flask, redirect, url_for
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+
+    from configparser import ConfigParser
+    config = ConfigParser()
+    # Ensure the config file exists
+    config.read('config.ini')
+    # Ensure the DB path is specified and exists
+    if not config.has_option('main', 'DB'):
+        raise Exception("DB path not specified in config.ini")
+    if not os.path.exists(config.get('main', 'DB')):
+        raise Exception("DB path does not exist")
+    
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(os.environ['QDB'], 'questions.db'),
+        DATABASE=os.path.join(config.get('main', 'DB')).replace('\\', os.sep)
     )
-    app.config['DATABASE'] = os.path.join(os.environ['QDB'], 'questions.db')
+    app.config['DATABASE'] = config.get('main', 'DB').replace('\\', os.sep)
+    print(app.config['DATABASE'])
 
     if test_config is None:
         # load the instance config, if it exists, when not testing

@@ -1,11 +1,11 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for, send_file
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, send_file, current_app
 )
 from flaskapp.db import get_db
 import tempfile
 from flaskapp.queryHelper.merger import Merge
 from flaskapp.queryHelper.querydb import queryDb
-import os
+
 
 bp = Blueprint('query', __name__, url_prefix='/query')
 
@@ -47,7 +47,7 @@ def query():
         matches = queryDb(db, {'exam_board': exam_board, 'subject_code': subject, 'conditions': search_list})
 
         # Merge the pdfs
-        temp_file = Merge(matches, os.environ['QDB']).mergePages()       
+        temp_file = Merge(matches, current_app.config['DATABASE']).mergePages()       
         
         return send_file(temp_file, mimetype='application/pdf', as_attachment=True, download_name='output.pdf')
     else:

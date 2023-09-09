@@ -1,10 +1,11 @@
 import copy
 import fitz
 import tempfile
+import os
 
 # Class to merge multiple source pdfs into one pdf
 class Merge:
-    def __init__(self, sources, rootDir = "C:\\"):
+    def __init__(self, sources, rootDir):
         self.border = 20
         self.sources = sources
         self.name_tracker = []
@@ -18,7 +19,7 @@ class Merge:
     def loadPages(self):
         self.sources.sort(key=lambda x: len(fitz.open(f"{self.rootDir}{x}")))
         for paper in self.sources:
-            reader = fitz.open(f"{self.rootDir}{paper}")
+            reader = fitz.open(f"{os.path.join(self.rootDir, paper)}")
             self.tmpPdf.insert_pdf(reader)
             for page in reader:
                 self.name_tracker.append(paper)
