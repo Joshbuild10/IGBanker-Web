@@ -50,19 +50,24 @@ def query():
         # Pairs the elements of filter, search string and match into a list of dictionaries
         # E.g [{'text': 'Topic', 'search_term': 'Topic 1', 'match': '0.8'}, {'filter': 'year', 'search_term': '2017', 'match': '0.9'}]
         search_list = [{'filter': f, 'search_term': str, 'match': sim} for f, str, sim in zip(filters, search_terms, matches)]
-
+        
         # Query the database
         matches = queryDb(db, {'exam_board': exam_board, 'subject_code': subject, 'conditions': search_list})
 
         # Merge the pdfs
         try:
-            temp_file = Merge(matches, current_app.config['DATABASE']).mergePages()
+            temp_file, missingFiles = Merge(matches, current_app.config['DATABASE']).mergePages()
+            # If an error was thrown and some files are missing
+            if len(missingFiles):
+                current_app.logger.error(f"Missing files: {missingFiles}")
+                flash("Some results may not have been returned, this is a server issue.")
             return send_file(temp_file, mimetype='application/pdf', as_attachment=True, download_name='output.pdf')
+        
         # If there is an error merging the pdfs, flash a message
         except IOError as e:
             current_app.logger.error(e)
             flash("Error merging pdfs. This is an issue with the server. Please try again later.")
-            return render_template('query/query.html', info=info)   
+            return render_template('query/query.html', info=info)
         
     else:
         flash("Invalid request method.")
