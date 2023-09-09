@@ -83,26 +83,26 @@
                     <table class="table table-bordered text-center table-m" id="querytable">
                         <thead>
                             <tr>
-                                <th class="">Criteria</th>
-                                <th>Value</th>
-                                <th class="">Similarity</th>
+                                <th class="">Filter</th>
+                                <th>Search term</th>
+                                <th class="">Match</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr id="mainrow">
                                 <td class="crit">
-                                    <select class="form-select" id="criteria" name="criteria">
-                                        {% for criteria in info["criterias"] %}
-                                            <option>{{ criteria }}</option>
+                                    <select class="form-select" id="filter" name="filter">
+                                        {% for filter in info["filters"] %}
+                                            <option>{{ filter }}</option>
                                         {% endfor %}
                                     </select>
                                 </td>
                                 <td>
-                                    <input class="form-control" type="text" id="search_string" name="search_string">
+                                    <input class="form-control" type="text" id="search_term" name="search_term">
                                 </td>
                                 <td>
-                                    <input class="form-control" type="number" id="similarity" name="similarity" min="0" max="1" value="1" step="0.1"
+                                    <input class="form-control" type="number" id="match" name="match" min="0" max="1" value="1" step="0.1"
                                     onchange="if(this.value>this.max)this.value=this.max;if(this.value<this.min)this.value=this.min;">
                                 </td>
                                 <td class="snug" style="padding: 0.5rem 0.2rem;">

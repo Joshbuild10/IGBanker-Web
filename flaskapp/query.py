@@ -25,14 +25,14 @@ def query():
     exam_boards = [exam_board[0] for exam_board in db.execute("SELECT DISTINCT exam_board FROM questions").fetchall()]
     
     # Gets the column names of the database
-    criterias = [column[1] for column in db.execute("PRAGMA table_info(questions)").fetchall()]
+    filters = [column[1] for column in db.execute("PRAGMA table_info(questions)").fetchall()]
 
-    # Removes subject code and exam board from column names to be used as criteria
-    criterias.remove('subject_code')
-    criterias.remove('exam_board')
+    # Removes subject code and exam board from column names to be used as filter
+    filters.remove('subject_code')
+    filters.remove('exam_board')
 
     # Dictionary of column names and the base info
-    info = {"criterias": criterias, "subjects": subject_codes, "boards": exam_boards}
+    info = {"filters": filters, "subjects": subject_codes, "boards": exam_boards}
 
     if request.method == 'GET':
         return render_template('query/query.html', info=info)
@@ -40,16 +40,16 @@ def query():
     elif request.method == 'POST':
         # Get and validate form data
         try:
-            exam_board, subject, criteria, search_strings, similarities = queryForm(request.form, info)
+            exam_board, subject, filters, search_terms, matches = queryForm(request.form, info)
         # If there is an error validating the form, flash a message
         except ValidationError as e:
             print(e.message)
             flash(e.message)
             return render_template('query/query.html', info=info)
 
-        # Pairs the elements of criteria, search string and similarity into a list of dictionaries
-        # E.g [{'text': 'Topic', 'search_string': 'Topic 1', 'similarity': '0.8'}, {'criteria': 'year', 'search_string': '2017', 'similarity': '0.9'}]
-        search_list = [{'criteria': c, 'search_string': str, 'similarity': sim} for c, str, sim in zip(criteria, search_strings, similarities)]
+        # Pairs the elements of filter, search string and match into a list of dictionaries
+        # E.g [{'text': 'Topic', 'search_term': 'Topic 1', 'match': '0.8'}, {'filter': 'year', 'search_term': '2017', 'match': '0.9'}]
+        search_list = [{'filter': f, 'search_term': str, 'match': sim} for f, str, sim in zip(filters, search_terms, matches)]
 
         # Query the database
         matches = queryDb(db, {'exam_board': exam_board, 'subject_code': subject, 'conditions': search_list})

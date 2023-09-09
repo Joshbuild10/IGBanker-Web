@@ -10,9 +10,9 @@ def queryForm(form, info):
     # Get form data
     exam_board = form['board']
     subject = form['subject']
-    criteria = form.getlist('criteria')
-    search_strings = form.getlist('search_string')
-    similarities = form.getlist('similarity')
+    filters = form.getlist('filter')
+    search_terms = form.getlist('search_term')
+    matches = form.getlist('match')
 
     # Validate exam board
     if exam_board not in info['boards']:
@@ -22,28 +22,28 @@ def queryForm(form, info):
     if subject not in info['subjects']:
         raise ValidationError("Please select one of the supported subjects from the dropdown")
 
-    # Validate criteria
-    for criterion in criteria:
-        if criterion not in info['criterias']:
-            raise ValidationError("Please select one of the valid criteria from the dropdown")
+    # Validate filter
+    for filter  in filters:
+        if filter not in info['filters']:
+            raise ValidationError("Please select one of the valid filter from the dropdown")
 
     # Validate search strings
-    for search_string in search_strings:
-        if search_string == "":
+    for search_term in search_terms:
+        if search_term == "":
             raise ValidationError("Please fill in all search strings")
     
     # Validate field lengths   
-    if len(criteria) != len(search_strings) != len(similarities):
+    if len(filters) != len(search_terms) != len(matches):
         raise ValidationError("Please fill in all fields")
 
-    # Validate similarities
+    # Validate matches
     try:
-        similarities = [float(x) for x in similarities]
-        for similarity in similarities:
-            if similarity < 0 or similarity > 1:
-                raise ValidationError("Please enter a decimal number between 0 and 1 for similarity")
+        matches = [float(x) for x in matches]
+        for match in matches:
+            if match < 0 or match > 1:
+                raise ValidationError("Please enter a decimal number between 0 and 1 for match")
     except ValueError:
-        raise ValidationError("Please enter a decimal number between 0 and 1 for similarity")
+        raise ValidationError("Please enter a decimal number between 0 and 1 for match")
 
     # If all valid, return data
-    return exam_board, subject, criteria, search_strings, similarities
+    return exam_board, subject, filters, search_terms, matches
