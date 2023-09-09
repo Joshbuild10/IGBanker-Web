@@ -51,6 +51,18 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.flash {
+    /*font-family: 'Inter' ;*/
+    font-style: normal;
+    font-weight: 500;
+    font-size: calc(var(--text-size)/2.5);
+    line-height: calc(var(--text-height)/2.5);
+    /* identical to box height */
+
+    text-align: center;
+
+    color: #FF0022;
+}
 .table {
     padding: 0px !important;
 }

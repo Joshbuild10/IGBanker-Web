@@ -5,13 +5,19 @@ from flaskapp.db import get_db
 import tempfile
 from flaskapp.queryHelper.merger import Merge
 from flaskapp.queryHelper.querydb import queryDb
-
+from flaskapp.queryHelper.form import queryForm, ValidationError
 
 bp = Blueprint('query', __name__, url_prefix='/query')
 
 @bp.route('/', methods=('GET', 'POST'))
 def query():
-    db = get_db()
+    try:
+        db = get_db()
+    # If there is an error connecting to the database, log the error and flash a message
+    except Exception as e:
+        current_app.logger.error(e)
+        flash("Error connecting to database. This is an issue with the server. Please try again later.")
+        return render_template('query/query.html')
 
     # Gets unique subject codes
     subject_codes = [subject_code[0] for subject_code in db.execute("SELECT DISTINCT subject_code FROM questions").fetchall()]
@@ -32,23 +38,31 @@ def query():
         return render_template('query/query.html', info=info)
     
     elif request.method == 'POST':
-        # Get the form data
-        exam_board = request.form['board']
-        subject = request.form['subject']
-        criteria = request.form.getlist('criteria')
-        search_string = request.form.getlist('search_string')
-        similarity = request.form.getlist('similarity')
+        # Get and validate form data
+        try:
+            exam_board, subject, criteria, search_strings, similarities = queryForm(request.form, info)
+        # If there is an error validating the form, flash a message
+        except ValidationError as e:
+            print(e.message)
+            flash(e.message)
+            return render_template('query/query.html', info=info)
 
         # Pairs the elements of criteria, search string and similarity into a list of dictionaries
         # E.g [{'text': 'Topic', 'search_string': 'Topic 1', 'similarity': '0.8'}, {'criteria': 'year', 'search_string': '2017', 'similarity': '0.9'}]
-        search_list = [{'criteria': c, 'search_string': s, 'similarity': sim} for c, s, sim in zip(criteria, search_string, similarity)]
+        search_list = [{'criteria': c, 'search_string': str, 'similarity': sim} for c, str, sim in zip(criteria, search_strings, similarities)]
 
         # Query the database
         matches = queryDb(db, {'exam_board': exam_board, 'subject_code': subject, 'conditions': search_list})
 
         # Merge the pdfs
-        temp_file = Merge(matches, current_app.config['DATABASE']).mergePages()       
+        try:
+            temp_file = Merge(matches, current_app.config['DATABASE']).mergePages()
+            return send_file(temp_file, mimetype='application/pdf', as_attachment=True, download_name='output.pdf')
+        # If there is an error merging the pdfs, flash a message
+        except IOError as e:
+            current_app.logger.error(e)
+            flash("Error merging pdfs. This is an issue with the server. Please try again later.")
+            return render_template('query/query.html', info=info)   
         
-        return send_file(temp_file, mimetype='application/pdf', as_attachment=True, download_name='output.pdf')
     else:
         flash("Invalid request method.")

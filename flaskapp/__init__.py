@@ -42,6 +42,11 @@ def create_app(test_config=None):
         # Redirect to query page
         return redirect(url_for('query.query'))
     
+    # If route is undefined, redirect to query page
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return redirect(url_for('query.query'))
+    
     from . import query
     app.register_blueprint(query.bp)
 

@@ -53,8 +53,17 @@
     <div class="container">
         <p class="title">Question Bank Maker</p>
         <div class="main flex-column align-items-stretch justify-content-start">
-            <form action="/query" method="post">
-                <div class="top d-flex flex-column row-gap-4 my-3 my-md-5 mx-1 mx-md-3 mx-lg-5">
+            <form action="/query" method="post" class="mt-2 mt-md-3">
+                {% for message in get_flashed_messages() %}
+                    <div class="flash">{{ message }}</div>
+                {% endfor %}
+                {% if get_flashed_messages() %}
+                    {% set top_margin = "mt-1 mt-md-2" %}
+                {% else %}
+                    {% set top_margin = "mt-3 mt-sm-4 mt-md-5" %}  
+                {% endif %}
+
+                <div class="top d-flex flex-column row-gap-4 {{ top_margin }} mb-3 mb-md-4 mx-1 mx-md-3 mx-lg-5">
                     <div class="input-group">
                         <label class="input-group-text" for="board">Exam Board:</label>
                         <select class="form-select" id="board" name="board">
