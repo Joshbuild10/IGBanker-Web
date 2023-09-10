@@ -42,6 +42,15 @@
                 document.getElementById("querytable").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[0].getElementsByTagName("td")[3].getElementsByTagName("button")[0].classList.add("disabled");
             }
         }
+        // When a form is submitted, clear the current flash messages
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementsByTagName("form")[0].addEventListener("submit", function() {
+                document.getElementsByClassName("flash")[0].remove();
+                // Set margin top margin
+                document.getElementsByClassName("top")[0].classList.remove("mt-1", "mt-md-2");
+                document.getElementsByClassName("top")[0].classList.add("mt-3", "mt-sm-4", "mt-md-5");
+            });
+        });
     </script>
     <div class="circlecont">
         <div class="circle1"> </div>

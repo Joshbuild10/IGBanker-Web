@@ -13,29 +13,46 @@ class Merge:
         self.spacing = 0
         self.rootDir = rootDir
         self.missingFiles = []
-        self.loadPages()
         self.max_size = 100 * 1024 * 1024 # 100 MB
+        self.loadPages()
 
     # Loads all pages from the sources into the pages array
     def loadPages(self):
+        # Sort the sources by the number of pages in the pdf, ignoring missing files
         try:
             self.sources.sort(key=lambda x: len(fitz.open(f"{self.rootDir}{x}")))
         except Exception as e:
             pass
-
+        
+        size = 0
+        # Load all pages into the temporary pdf
         for paper in self.sources:
-            path = f"{os.path.join(self.rootDir, paper)}"
+            path = f"{os.path.join(self.rootDir, paper)}" 
             try:
                 if os.path.exists(path):
                     reader = fitz.open(path)
+
+                    # If the file size is too big, don't add any more pages
+                    size += len(reader.write())
+                    if size > self.max_size:
+                        break
+
+                    # Add the pages to the temporary pdf
                     self.tmpPdf.insert_pdf(reader)
+
+                    # Add the name of the paper to the name tracker
                     for page in reader:
                         self.name_tracker.append(paper)
                 else:
                     raise FileNotFoundError
-            except IOError:
+            # If the file doesn't exist, add it to the missing files list
+            except IOError as e:
                 self.missingFiles.append(paper)
                 pass
+
+        # If there are no pages, throw an error
+        if len(self.tmpPdf) == 0:
+            raise Exception("No pages were able to be loaded")
 
 
     # Merges all pages into one pdf, allowing for multiple smaller pages to be merged into one A4 page

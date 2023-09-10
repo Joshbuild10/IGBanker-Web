@@ -54,19 +54,24 @@ def query():
         # Query the database
         matches = queryDb(db, {'exam_board': exam_board, 'subject_code': subject, 'conditions': search_list})
 
+        if len(matches) == 0:
+            flash("No results found.")
+            return render_template('query/query.html', info=info)
+        
         # Merge the pdfs
         try:
             temp_file, missingFiles = Merge(matches, current_app.config['DATABASE']).mergePages()
+
             # If an error was thrown and some files are missing
             if len(missingFiles):
                 current_app.logger.error(f"Missing files: {missingFiles}")
-                flash("Some results may not have been returned, this is a server issue.")
+                # flash("Some results may not have been returned, this is a server issue.")
+
             return send_file(temp_file, mimetype='application/pdf', as_attachment=True, download_name='output.pdf')
-        
         # If there is an error merging the pdfs, flash a message
-        except IOError as e:
+        except Exception as e:
             current_app.logger.error(e)
-            flash("Error merging pdfs. This is an issue with the server. Please try again later.")
+            flash("No matching questions found in database. Please try another search.")
             return render_template('query/query.html', info=info)
         
     else:
