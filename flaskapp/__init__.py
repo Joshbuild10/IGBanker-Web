@@ -22,6 +22,11 @@ def create_app(test_config=None):
         DATABASE=os.path.join(config.get('main', 'DB')).replace('\\', os.sep)
     )
     app.config['DATABASE'] = config.get('main', 'DB').replace('\\', os.sep)
+    # Set the maximum file size if specified else default to 10MB
+    if config.has_option('main', 'MAX_FILE_SIZE'):
+        app.config['MAX_FILE_SIZE'] = config.getint('main', 'MAX_FILE_SIZE') * 1024 * 1024
+    else:
+        app.config['MAX_FILE_SIZE'] = 20 * 1024 * 1024
     print(app.config['DATABASE'])
 
     if test_config is None:

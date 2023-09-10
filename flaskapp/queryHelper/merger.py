@@ -2,6 +2,7 @@ import copy
 import fitz
 import tempfile
 import os
+from flask import current_app
 
 # Class to merge multiple source pdfs into one pdf
 class Merge:
@@ -13,7 +14,7 @@ class Merge:
         self.spacing = 0
         self.rootDir = rootDir
         self.missingFiles = []
-        self.max_size = 100 * 1024 * 1024 # 100 MB
+        self.max_size = current_app.config['MAX_FILE_SIZE']
         self.loadPages()
 
     # Loads all pages from the sources into the pages array
